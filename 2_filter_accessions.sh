@@ -14,6 +14,7 @@ module load anaconda
 #conda init
 conda activate ncbi_datasets
 
+#Extract list of taxon ids from assembly data report
 jq -r '.organism.tax_id' assembly_data_report.jsonl > taxid_list_unfiltered.txt
 
 
@@ -23,12 +24,32 @@ jq -r '.organism.tax_id' assembly_data_report.jsonl > taxid_list_unfiltered.txt
 
 #conda install -c bioconda taxonkit
 
-# Get genus names for each taxid
-taxonkit lineage taxid_list_unfiltered.txt -d -t -R --data-dir ./new_taxdump \
-    | taxonkit reformat -f '{genus}' \
-    | awk -F'\t' '{print $1"\t"$2}' > taxid_to_genus.txt
 
-# Filter out taxids whose genus is in the exclusion list
-grep -v -F -f working_excluded_taxon_names.txt taxid_to_genus.txt \
-    | cut -f1 > filtered_taxids.txt
+#Filter taxon ids
+
+# Input files
+UNFILTERED="taxid_list_unfiltered.txt"
+EXCLUDE_GENUS="working_excluded_taxids.txt"
+TAXDUMP_DIR="/gpfs/projects/WeissmanGroup/awalling/new_taxdump/"
+
+# Output files
+FULL_LINEAGE="full_lineage.txt"
+LINEAGE_WITH_TAXIDS="taxid_with_lineage_ids.txt"
+TAXID_TO_GENUS="taxid_to_genus_taxid.txt"
+FILTERED="filtered_taxids.txt"
+
+
+echo "Step 1 + 2: Get full lineage and lineage taxids..."
+taxonkit lineage "$UNFILTERED" --show-lineage-taxids --data-dir "$TAXDUMP_DIR" > "$LINEAGE_WITH_TAXIDS"
+
+
+echo "Step 3: Extract genus taxids from lineage..."
+cut -f3 "$LINEAGE_WITH_TAXIDS" \
+    | awk -F'\t' '{split($1,a,";"); print a[length(a)]}' \
+    | grep -v -F -f "$EXCLUDE_GENUS" \
+    | sort -u > "$FILTERED"
+
+
+
+echo "Filtering complete! Filtered taxids saved to $FILTERED"
 
