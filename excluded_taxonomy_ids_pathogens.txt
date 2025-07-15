@@ -1,0 +1,19 @@
+#This file contains a list of pathogen taxonomic ids to exclude from curated database creation for Pseudomonadota because of their overrepresentation in RefSeq/GenBank. 
+
+#This list of pathogens was originally sourced from: "Exploring bacterial diversity via a curated and searchable snapshot of archived DNA sequences" Grace A. Blackwell, Martin Hunt, Kerri M. Malone, Leandro Lima, Gal Horesh, Blaise T. F. Alako, Nicholas R. Thomson , Zamin Iqbal, Nov 9 2021 https://doi.org/10.1371/journal.pbio.3001421
+
+#Also added were Helicobacter and Yersinia
+
+
+Pathogen_Genus,NCBI_Tax_ID
+Escherichia,561
+Salmonella,590
+Campylobacter,194
+Neisseria,482
+Klebsiella,570
+Pseudomonas,286
+Vibrio,662
+Acinetobacter,469
+Legionella,445
+Helicobacter,209
+Yersinia,629
