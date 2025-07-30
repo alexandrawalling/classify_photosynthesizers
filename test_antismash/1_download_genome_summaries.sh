@@ -25,6 +25,6 @@ while read -r acc <&3; do
 done 3< test_accessions.txt
 
 
-datasets download genome accession --inputfile assembly_accessions.txt --include genome, gff, gbff --filename test_genomes.zip
+datasets download genome accession --inputfile assembly_accessions.txt --include gbff --filename test_genomes.zip
 
 unzip test_genomes.zip

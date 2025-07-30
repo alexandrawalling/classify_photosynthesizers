@@ -17,10 +17,16 @@ conda activate ncbi_datasets
 mkdir -p ncbi_genomes
 
 while read -r taxid; do
+    output_zip="ncbi_genomes_${taxid}.zip"
+
+    if [[ -f "ncbi_genomes_jul_16/$output_zip" ]]; then
+        echo "Skipping TaxID $taxid — already downloaded."
+        continue
+    fi
+
     echo "Downloading genomes for TaxID: $taxid"
-    datasets download genome taxon "$taxid" --filename "downloads/genomes_${taxid}.zip"
+    datasets download genome taxon "$taxid" --include protein --filename "$output_zip"
     sleep 1  # Be polite to NCBI
 done < filtered_taxids.txt
-
 
 
